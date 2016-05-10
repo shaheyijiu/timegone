@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">timegone</string>
+    <string name="app_name">TimeGone</string>
     <string name="row_number">This is row number %d</string>
 </resources>

@@ -8,13 +8,21 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import java.util.ArrayList;
-import java.util.List;
+
 
 import adapter.AlphaAnimatorAdapter;
 import adapter.BottomAnimatorAdapter;
@@ -23,104 +31,39 @@ import adapter.LeftAnimatorAdapter;
 import adapter.MyListAdapter;
 import adapter.RightAnimatorAdapter;
 import adapter.ScaleAnimatorAdapter;
+import fragment.FragmentAdapter;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
     private String TAG = "MainActivity";
-    private ListView listView;
-    private ArrayList<String> list = new ArrayList<>();
     private BaseAdapter mAdapter;
-    private ActivityManager activityManager;
-    private PackageManager pm ;
-    private ComponentName cn;
-    private String lastPackageName ="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        listView = (ListView)findViewById(R.id.list);
-        for(int i = 0;i < 100;i++){
-            list.add("这是第"+i+"个项");
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new PlaceholderFragment())
+                    .commit();
         }
-        MyListAdapter adapter = new MyListAdapter(this,R.layout.listview_item,list);
-        //setAlphaAnimator(adapter);
-        setLeftAnimator(adapter);
-        //setRightAnimator(adapter);
-        //setScaleAnimator(adapter);
-        //setBotoomAnimator(adapter);
-        //setBottomRightAnimator(adapter);
-        activityManager =(ActivityManager) getApplicationContext().getSystemService(
-                Context.ACTIVITY_SERVICE);
-        pm = MainActivity.this.getPackageManager();
-        Thread thread = new Thread(new MonitorThread());
-        thread.start();
+
     }
 
-    private void setAlphaAnimator(BaseAdapter adapter){
-        AlphaAnimatorAdapter alphaAdapter = new AlphaAnimatorAdapter();
-        alphaAdapter.setAdapter(adapter);
-        alphaAdapter.setAbsListView(listView);
-        listView.setAdapter(alphaAdapter);
-    }
-
-    private void setLeftAnimator(BaseAdapter adapter){
-        LeftAnimatorAdapter leftAdapter = new LeftAnimatorAdapter();
-        leftAdapter.setAdapter(adapter);
-        leftAdapter.setAbsListView(listView);
-        listView.setAdapter(leftAdapter);
-    }
-
-    private void setRightAnimator(BaseAdapter adapter){
-        RightAnimatorAdapter rightAdapter = new RightAnimatorAdapter();
-        rightAdapter.setAdapter(adapter);
-        rightAdapter.setAbsListView(listView);
-        listView.setAdapter(rightAdapter);
-    }
-
-    private void setScaleAnimator(BaseAdapter adapter){
-        ScaleAnimatorAdapter scaleAdapter = new ScaleAnimatorAdapter();
-        scaleAdapter.setAdapter(adapter);
-        scaleAdapter.setAbsListView(listView);
-        scaleAdapter.setScaleFrom(0.5f);
-        listView.setAdapter(scaleAdapter);
-    }
-
-    private void setBotoomAnimator(BaseAdapter adapter){
-        BottomAnimatorAdapter bottomAdapter = new BottomAnimatorAdapter();
-        bottomAdapter.setAdapter(adapter);
-        bottomAdapter.setAbsListView(listView);
-        listView.setAdapter(bottomAdapter);
-    }
-
-    private void setBottomRightAnimator(BaseAdapter adapter){
-        BottomRightAnimatorAdapter bottomRightAdapter = new  BottomRightAnimatorAdapter();
-        bottomRightAdapter.setAdapter(adapter);
-        bottomRightAdapter.setAbsListView(listView);
-        listView.setAdapter(bottomRightAdapter);
-    }
-
-    class MonitorThread implements Runnable{
-
+    public static class PlaceholderFragment extends Fragment {
+        private FragmentAdapter fragmentAdapter;
+        @Nullable
         @Override
-        public void run() {
-            while (true){
-                cn = activityManager.getRunningTasks(1).get(0).topActivity;
-                String currentPackageName = cn.getPackageName();
-                if(!currentPackageName.equals(lastPackageName)){
-                    Log.i(TAG,"currentPackageName"+currentPackageName);
-                    try {
-                        ApplicationInfo info = pm.getApplicationInfo(currentPackageName, 0);
-                        Drawable iv = info.loadIcon(pm);
-                        if(iv != null){
-                            Log.i(TAG,"获得drawable");
-                        }
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                lastPackageName = currentPackageName;
-            }
-
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            ViewPager vp = (ViewPager)rootView.findViewById(R.id.tab_pager);
+            setupViews(vp);
+            return rootView;
+        }
+        private void setupViews(ViewPager mPager) {
+            fragmentAdapter = new FragmentAdapter(getFragmentManager());
+            mPager.setOffscreenPageLimit(4);
+            mPager.setAdapter(fragmentAdapter);
         }
     }
-
 }

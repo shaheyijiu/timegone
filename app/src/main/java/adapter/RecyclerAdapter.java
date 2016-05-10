@@ -12,7 +12,7 @@ import com.kdk.timegone.R;
 /**
  * Created by Administrator on 2016/5/3.
  */
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
     private int[] mDataset;
 
     // Provide a reference to the type of views that you are using
@@ -28,13 +28,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(int[] myDataset) {
+    public RecyclerAdapter(int[] myDataset) {
         mDataset = myDataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
