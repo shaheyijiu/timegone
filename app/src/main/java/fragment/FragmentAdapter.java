@@ -3,22 +3,27 @@ package fragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2016/5/4.
  */
-public class FragmentAdapter extends FragmentPagerAdapter {
+public class FragmentAdapter extends FragmentStatePagerAdapter {
     public static ArrayList<Fragment> fragments = new ArrayList<>();
+    private String TAG = "FragmentAdapter";
     public FragmentAdapter(FragmentManager fm) {
         super(fm);
         initFragment();
     }
 
     public void initFragment(){
-        fragments.add(new ListviewFragment());
-        fragments.add(new GraphFragment());
+        if (fragments.size() == 0){
+            fragments.add(new ListviewFragment());
+            fragments.add(new GraphFragment());
+        }
     }
 
     @Override
@@ -28,17 +33,15 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 return fragments.get(0);
             case 1:
                 return fragments.get(1);
-//            case 2:
-//                return fragments.get(2);
-//            case 3:
-//                return fragments.get(3);
             default:
+                Log.i(TAG,"positon="+position);
                 return null;
         }
     }
 
     @Override
     public int getCount() {
+        Log.i(TAG,"size="+fragments.size());
         return fragments.size();
     }
 }

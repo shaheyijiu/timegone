@@ -18,8 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity">
-
         </activity>
+        <service android:name="service.MonitorService">
+
+        </service>
     </application>
 
 </manifest>
