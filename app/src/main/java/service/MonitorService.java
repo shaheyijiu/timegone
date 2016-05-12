@@ -45,6 +45,7 @@ public class MonitorService extends Service {
         thread.start();
         return super.onStartCommand(intent, flags, startId);
     }
+
     class MonitorThread implements Runnable{
         private String tablename= "" ;
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(MonitorService.this);
@@ -71,7 +72,7 @@ public class MonitorService extends Service {
             Log.i(TAG,"sb="+sb.toString());
             dbAdapter.newTable(tablename,db);
             dbAdapter.updateTable(section, sb.toString(), db);
-            dbAdapter.queryTable(db);
+           // dbAdapter.queryTable(db);
         }
 
         @Override

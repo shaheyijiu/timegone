@@ -58,11 +58,11 @@ public class ListviewFragment extends Fragment {
         }
         layout = this.getActivity().getLayoutInflater().inflate(R.layout.fragment_listview,null);
         listView = (ListView)layout.findViewById(R.id.list);
-       // MyListAdapter adapter = new MyListAdapter(getContext(), R.layout.listview_item,list);
-       // setLeftAnimator(adapter);
+        MyListAdapter adapter = new MyListAdapter(getContext(), R.layout.listview_item,list);
+        setLeftAnimator(adapter);
 
-        //Intent intent = new Intent(getActivity(), MonitorService.class);
-        //getActivity().startService(intent);
+        Intent intent = new Intent(getActivity(), MonitorService.class);
+        getActivity().startService(intent);
         return layout;
     }
 
@@ -74,11 +74,10 @@ public class ListviewFragment extends Fragment {
     }
 
     private void setLeftAnimator(BaseAdapter adapter){
-//        LeftAnimatorAdapter leftAdapter = new LeftAnimatorAdapter();
-//        leftAdapter.setAdapter(adapter);
-//        leftAdapter.setAbsListView(listView);
-//        listView.setAdapter(leftAdapter);
-        listView.setAdapter(adapter);
+        LeftAnimatorAdapter leftAdapter = new LeftAnimatorAdapter();
+        leftAdapter.setAdapter(adapter);
+        leftAdapter.setAbsListView(listView);
+        listView.setAdapter(leftAdapter);
     }
 
     private void setRightAnimator(BaseAdapter adapter){

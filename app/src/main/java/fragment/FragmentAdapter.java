@@ -34,14 +34,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return fragments.get(1);
             default:
-                Log.i(TAG,"positon="+position);
                 return null;
         }
     }
 
     @Override
     public int getCount() {
-        Log.i(TAG,"size="+fragments.size());
         return fragments.size();
     }
 }

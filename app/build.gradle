@@ -3,7 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
+    //compileSdkVersion rootProject.ext.compileSdkVersion
+    //buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.kdk.timegone"
         minSdkVersion 15
@@ -24,4 +25,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile files('libs/RecyclerView.jar')
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }
