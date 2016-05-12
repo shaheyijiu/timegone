@@ -46,6 +46,7 @@ import service.MonitorService;
  */
 public class ListviewFragment extends Fragment {
     private ArrayList<String> list = new ArrayList<>();
+    private Map<String,String> mapSqlite = new HashMap<>();
     private ListView listView;
     private View layout;
 
@@ -64,6 +65,13 @@ public class ListviewFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MonitorService.class);
         getActivity().startService(intent);
         return layout;
+    }
+
+    private void updateListview(){
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        DatabaseAdapter mAdapter = new DatabaseAdapter();
+        mapSqlite = mAdapter.queryTable(db);
     }
 
     private void setAlphaAnimator(BaseAdapter adapter){

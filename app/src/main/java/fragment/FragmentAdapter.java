@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Created by Administrator on 2016/5/4.
  */
 public class FragmentAdapter extends FragmentStatePagerAdapter {
-    public static ArrayList<Fragment> fragments = new ArrayList<>();
+    public  ArrayList<Fragment> fragments = new ArrayList<>();
     private String TAG = "FragmentAdapter";
     public FragmentAdapter(FragmentManager fm) {
         super(fm);

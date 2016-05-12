@@ -89,14 +89,17 @@ public class DatabaseAdapter {
         return result ;
     }
 
-    public void queryTable(SQLiteDatabase db){
+    public Map<String,String> queryTable(SQLiteDatabase db){
+        Map<String,String> map = new HashMap<>();
         Cursor cursor = db.rawQuery("select * from " + TABLE_NAME ,null);
         while (cursor.moveToNext()){
             String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
             String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
-            Log.i(TAG,"timesection="+timesection+" appname="+appname);
+            map.put(timesection,appname);
+            //Log.i(TAG,"timesection="+timesection+" appname="+appname);
         }
         cursor.close();
+        return map;
     }
 
     public boolean isFirstInsert(SQLiteDatabase db,String section){
@@ -111,6 +114,6 @@ public class DatabaseAdapter {
     }
 
     public void clearTable(SQLiteDatabase db){
-        db.execSQL("DELETE FROM m20160511");
+//        db.execSQL("DELETE FROM m20160511");
     }
 }
