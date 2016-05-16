@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
@@ -21,6 +22,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import Util.TextUtil;
+import broadcase.WakeService;
 import database.DatabaseAdapter;
 import database.DatabaseHelper;
 
@@ -33,6 +36,7 @@ public class MonitorService extends Service {
     private ActivityManager activityManager;
     private Timer mTimer;
     private ComponentName cn;
+    private Intent intent = new Intent("com.example.communication.RECEIVER");
 
     private String TAG ="MonitorService";
     @Nullable
@@ -47,9 +51,12 @@ public class MonitorService extends Service {
                 Context.ACTIVITY_SERVICE);
         pm = getPackageManager();
         startMonitor();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
+        WakeService receiver = new WakeService();
+        registerReceiver(receiver, filter);
+        //flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
-
 
     public void startMonitor(){
         if (mTimer != null){
@@ -59,7 +66,7 @@ public class MonitorService extends Service {
         if (mTimer == null) {
             mTimer = new Timer();
             mTimer.schedule(new MonitorTimer()
-                , 1000, 1000);
+                , 2000, 2000);
         }
     }
 
@@ -69,6 +76,7 @@ public class MonitorService extends Service {
         StringBuilder sb = new StringBuilder();
         String tablename = formatter.format(curDate);
         sb.append("m").append(tablename);
+        TextUtil.putStringValue(this, "tablename", sb.toString());
         return sb.toString();
     }
 
@@ -82,15 +90,17 @@ public class MonitorService extends Service {
         String tablename= getTableName();
 
         private void saveMap(HashMap<String,Long> map,String section,String tablename){
+            Log.i(TAG,"map的大小"+map.size());
             Iterator<Map.Entry<String,Long>> iterator = map.entrySet().iterator();
             StringBuffer sb = new StringBuffer();
             while (iterator.hasNext()){
                 Map.Entry<String,Long> entry = iterator.next();
                 sb.append(entry.getKey()+"66split66");
             }
-            dbAdapter.newTable(tablename,db);
-            dbAdapter.updateTable(section, sb.toString(), db);
-            dbAdapter.queryTable(db);
+            dbAdapter.newTable(tablename, db);
+            dbAdapter.updateTable(section, sb.toString(), db,tablename);
+            sendBroadcast(intent);//发送广播，更新listview
+            //dbAdapter.queryTable(db);
         }
 
         @Override
@@ -105,6 +115,7 @@ public class MonitorService extends Service {
                 boolean invalidateDay = (now / l) > (initialTime / l);
                 if (invalidateDay) {
                     tablename= getTableName();
+                    Log.i(TAG,"invalidateDay启动");
                     map.clear();
                     initialTime = now;
                 }
@@ -258,5 +269,6 @@ public class MonitorService extends Service {
             lastPackageName = currentPackageName;
         }
     }
+
 
 }

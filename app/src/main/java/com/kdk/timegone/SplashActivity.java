@@ -21,29 +21,12 @@ public class SplashActivity extends Activity {
     private LinearLayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
 
-    private int[] ImageBox ={
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher,};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
         bt_listview = (Button)findViewById(R.id.bt_listview);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setOrientation(0);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecyclerAdapter(ImageBox);
-        mRecyclerView.setAdapter(mAdapter);
-
 
         bt_listview.setOnClickListener(new View.OnClickListener() {
             @Override

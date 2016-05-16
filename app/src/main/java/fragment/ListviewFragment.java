@@ -1,9 +1,11 @@
 package fragment;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import Util.TextUtil;
 import adapter.AlphaAnimatorAdapter;
 import adapter.BottomAnimatorAdapter;
 import adapter.BottomRightAnimatorAdapter;
@@ -45,34 +48,54 @@ import service.MonitorService;
  * Created by Administrator on 2016/5/4.
  */
 public class ListviewFragment extends Fragment {
-    private ArrayList<String> list = new ArrayList<>();
     private Map<String,String> mapSqlite = new HashMap<>();
     private ListView listView;
     private View layout;
-
+    private  ArrayList<Map<String,String>> mList = new ArrayList<>();
+    private MyListAdapter adapter;
+    private MsgReceiver msgReceiver;
+    private LeftAnimatorAdapter leftAdapter;
     private String TAG = "ListviewFragment";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        for(int i = 0;i < 100;i++){
-            list.add("这是第"+i+"个项");
-        }
         layout = this.getActivity().getLayoutInflater().inflate(R.layout.fragment_listview,null);
         listView = (ListView)layout.findViewById(R.id.list);
-        MyListAdapter adapter = new MyListAdapter(getContext(), R.layout.listview_item,list);
-        setLeftAnimator(adapter);
+        initList();
+
+        //动态注册广播接收器
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.example.communication.RECEIVER");
+        getActivity().registerReceiver(msgReceiver, intentFilter);
 
         Intent intent = new Intent(getActivity(), MonitorService.class);
         getActivity().startService(intent);
         return layout;
     }
 
-    private void updateListview(){
+    private void initList(){
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         DatabaseAdapter mAdapter = new DatabaseAdapter();
-        mapSqlite = mAdapter.queryTable(db);
+        String tablename = TextUtil.getStringValue(getContext(),"tablename");
+        mList = mAdapter.queryTable(db,tablename);
+        adapter = new MyListAdapter(getContext(), R.layout.listview_item,mList);
+        //listView.setAdapter(adapter);
+        setLeftAnimator(adapter);
     }
+
+    private void updateListview(MyListAdapter adapter){
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        DatabaseAdapter mAdapter = new DatabaseAdapter();
+        String tablename = TextUtil.getStringValue(getContext(),"tablename");
+        mList = mAdapter.queryTable(db,tablename);
+        adapter = new MyListAdapter(getContext(), R.layout.listview_item,mList);
+        initList();
+        //adapter.notifyDataSetChanged();
+    }
+
 
     private void setAlphaAnimator(BaseAdapter adapter){
         AlphaAnimatorAdapter alphaAdapter = new AlphaAnimatorAdapter();
@@ -82,7 +105,7 @@ public class ListviewFragment extends Fragment {
     }
 
     private void setLeftAnimator(BaseAdapter adapter){
-        LeftAnimatorAdapter leftAdapter = new LeftAnimatorAdapter();
+        leftAdapter = new LeftAnimatorAdapter();
         leftAdapter.setAdapter(adapter);
         leftAdapter.setAbsListView(listView);
         listView.setAdapter(leftAdapter);
@@ -117,5 +140,19 @@ public class ListviewFragment extends Fragment {
         listView.setAdapter(bottomRightAdapter);
     }
 
+    public class MsgReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //拿到进度，更新UI
+            updateListview(adapter);
+           // abortBroadcast();
+        }
+
+    }
+    @Override
+    public void onDestroy() {
+        getActivity().unregisterReceiver(msgReceiver);
+        super.onDestroy();
+    }
 }

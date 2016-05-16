@@ -8,16 +8,19 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import Util.TextUtil;
+
 /**
  * Created by Administrator on 2016/5/9.
  */
 public class DatabaseAdapter {
-    private  String TABLE_NAME = "default_table";
+    private  String TABLE_NAME = "";
     private  String COLUMN_NAME_SECTION = "timesection";
     private  String COLUMN_NAME_APP = "appname";
 
@@ -50,17 +53,16 @@ public class DatabaseAdapter {
         db.insert(TABLE_NAME, null, values);
     }
 
-    public void updateTable(String section,String appname,SQLiteDatabase db){
+    public void updateTable(String section,String appname,SQLiteDatabase db,String tablename){
         if(section != null && appname != null){
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SECTION,section);
             values.put(COLUMN_NAME_APP, appname);
-            Log.i(TAG, "appname=" + appname);
-            if (isFirstInsert(db,section)){
-                db.insert(TABLE_NAME, null, values);
+            if (isFirstInsert(db,section,tablename)){
+                db.insert(tablename, null, values);
             }else {
                 String where="timesection = ?" ;
-                db.update(TABLE_NAME, values, where, new String[]{section});
+                db.update(tablename, values, where, new String[]{section});
             }
             //String sql = "UPDATE "+TABLE_NAME+" SET appname = "+appname+" where timesection = "+section+";";
 
@@ -89,21 +91,25 @@ public class DatabaseAdapter {
         return result ;
     }
 
-    public Map<String,String> queryTable(SQLiteDatabase db){
-        Map<String,String> map = new HashMap<>();
-        Cursor cursor = db.rawQuery("select * from " + TABLE_NAME ,null);
-        while (cursor.moveToNext()){
-            String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
-            String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
-            map.put(timesection,appname);
-            //Log.i(TAG,"timesection="+timesection+" appname="+appname);
+    public  ArrayList<Map<String,String>> queryTable(SQLiteDatabase db,String tablename){
+        ArrayList<Map<String,String>> list = new ArrayList<>();
+        if (!tablename.equals("")){
+            Cursor cursor = db.rawQuery("select * from " + tablename ,null);
+            while (cursor.moveToNext()){
+                String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
+                String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
+                Map<String,String> map = new HashMap<>();
+                map.put(timesection,appname);
+                list.add(map);
+                //Log.i(TAG,"timesection="+timesection+" appname="+appname);
+            }
+            cursor.close();
         }
-        cursor.close();
-        return map;
+        return list;
     }
 
-    public boolean isFirstInsert(SQLiteDatabase db,String section){
-        Cursor cursor = db.rawQuery("select * from " + TABLE_NAME ,null);
+    public boolean isFirstInsert(SQLiteDatabase db,String section,String tablename){
+        Cursor cursor = db.rawQuery("select * from " + tablename ,null);
         while (cursor.moveToNext()){
             String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
             if (timesection.equals(section))

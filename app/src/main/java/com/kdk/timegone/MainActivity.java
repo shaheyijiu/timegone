@@ -43,12 +43,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        Log.i(TAG,"MainActivity启动");
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-
     }
 
     public static class PlaceholderFragment extends Fragment {

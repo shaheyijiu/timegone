@@ -1,6 +1,8 @@
 package adapter;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,8 @@ import com.kdk.timegone.R;
  * Created by Administrator on 2016/5/3.
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-    private int[] mDataset;
-
+    private Drawable[] mDataset;
+    private String TAG = "RecyclerAdapter";
     // Provide a reference to the type of views that you are using
     // (custom viewholder)
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -28,7 +30,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerAdapter(int[] myDataset) {
+
+    public RecyclerAdapter(Drawable[] myDataset) {
         mDataset = myDataset;
     }
 
@@ -39,9 +42,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.my_text_view, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-        //ImageView m = (ImageView)view.findViewById(R.id.image);
-        //TextView v = (TextView)view.findViewById(R.id.text);
+
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
@@ -51,9 +52,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText("text");
-        holder.mImageView.setImageResource(mDataset[position]);
-
+        //holder.mTextView.setText("text");
+        holder.mImageView.setImageDrawable(mDataset[position]);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
