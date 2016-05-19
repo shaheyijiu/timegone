@@ -20,9 +20,10 @@
         </activity>
         <activity android:name=".MainActivity">
         </activity>
-        <service android:name="service.MonitorService">
-
-        </service>
+        <service android:name="service.MonitorService"/>
+        <service android:name="service.MonitorService$GrayInnerService"
+                android:enabled="true"
+                android:exported="false" />
     </application>
 
 </manifest>

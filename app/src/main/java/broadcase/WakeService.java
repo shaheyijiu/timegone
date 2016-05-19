@@ -28,8 +28,8 @@ public class WakeService extends BroadcastReceiver {
             }
             if (!isServiceRunning) {
                 Log.i(TAG,"serviceNanme被杀");
-                //Intent i = new Intent(context, MonitorService.class);
-                //context.startService(i);
+                Intent i = new Intent(context, MonitorService.class);
+                context.startService(i);
             }
 
 

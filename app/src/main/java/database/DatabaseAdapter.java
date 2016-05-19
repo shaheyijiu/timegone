@@ -24,6 +24,7 @@ public class DatabaseAdapter {
     private  String COLUMN_NAME_SECTION = "timesection";
     private  String COLUMN_NAME_APP = "appname";
 
+
     public   String USERNAME_TABLE_CREATE = "CREATE TABLE "
             + TABLE_NAME + " ("
             + COLUMN_NAME_SECTION +" TEXT, "
@@ -94,7 +95,10 @@ public class DatabaseAdapter {
     public  ArrayList<Map<String,String>> queryTable(SQLiteDatabase db,String tablename){
         ArrayList<Map<String,String>> list = new ArrayList<>();
         if (!tablename.equals("")){
-            Cursor cursor = db.rawQuery("select * from " + tablename ,null);
+            this.TABLE_NAME = tablename;
+            db.execSQL(getSql());//防止查询的表不存在
+            Cursor cursor = db.rawQuery("select * from " + tablename +" order by "+ COLUMN_NAME_SECTION
+                    +" asc" ,null);
             while (cursor.moveToNext()){
                 String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
                 String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
