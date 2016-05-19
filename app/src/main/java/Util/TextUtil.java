@@ -37,6 +37,14 @@ public class TextUtil{
     public static int getIntValue(Context context,String key){
         return getSharedPreference(context).getInt(key, 0);
     }
+    public static Long getLongValue(Context context,String key){
+        return getSharedPreference(context).getLong(key,-1);
+    }
+    public static  void putLongValue(Context context,String key,Long value){
+        SharedPreferences.Editor editor = getSharedPreference(context).edit();
+        editor.putLong(key,value);
+        editor.commit();
+    }
     public static  void putBooleanValue(Context context,String key,Boolean state){
         SharedPreferences.Editor editor = getSharedPreference(context).edit();
         editor.putBoolean(key, state);

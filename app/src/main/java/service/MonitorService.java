@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import Util.Constant;
 import Util.TextUtil;
 import app.App;
 import broadcase.WakeService;
@@ -40,14 +41,13 @@ import database.DatabaseHelper;
  * Created by Administrator on 2016/5/11.
  */
 public class MonitorService extends Service {
-    private String lastPackageName ="";
+    private String lastPackageName ="com.kdk.timegone";
     private String defaultSplit = "66split66";
     private PackageManager pm ;
     private ActivityManager activityManager;
     private Timer mTimer;
     private ComponentName cn;
     private Intent intent = new Intent("com.example.communication.RECEIVER");//通知数据库数据更新
-    private boolean mReflectFlg = false;
     private HashMap<String,Integer> map = new HashMap<>();
     private final static int GRAY_SERVICE_ID = -1001;
     private static MonitorService instance;
@@ -91,19 +91,15 @@ public class MonitorService extends Service {
     private void initMap(){
         Date mDate = new Date();
         long now = mDate.getTime();
-        long l = 24 * 60 * 60 * 1000; //每天的毫秒数
-        int time = (int) ((now % l) / (60 * 60 * 1000) + 8);   //计算所属时间段
         String tablename = TextUtil.getStringValue(this, "tablename");
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(MonitorService.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         DatabaseAdapter dbAdapter= new DatabaseAdapter();
-//        if (!map.containsKey("com.kdk.timegone")){
-//            map.put("com.kdk.timegone",time);
-//        }
-        ArrayList<Map<String,String>> list = dbAdapter.queryTable(db, tablename);
-        if (list.size() >= 1){
+        ArrayList<Map<String,String>> list = dbAdapter.querySectionTable(db, tablename);
+        if (list.size() >= 1 && isSameTime(now)){
             Map<String,String> tempMap = list.get(list.size() - 1);
             Iterator<Map.Entry<String, String>> it = tempMap.entrySet().iterator();
+
             while (it.hasNext()) {
                 Map.Entry<String, String> entry = it.next();
                 String[] sArray;
@@ -112,8 +108,36 @@ public class MonitorService extends Service {
                     if(!map.containsKey(sArray[i]))
                         map.put(sArray[i], Integer.parseInt(entry.getKey()));
                 }
-
             }
+        }
+    }
+
+    /**
+     *判断service挂了重启是否还处于同一时间段
+     */
+    public boolean isSameTime(long now){
+        long l = 24 * 60 * 60 * 1000; //每天的毫秒数
+        int nTime = (int) ((now % l) / (60 * 60 * 1000) + 8);   //计算所属时间段
+        Long lastSaveTime = TextUtil.getLongValue(this, Constant.lastSaveTime);
+        int lTime = (int) ((lastSaveTime % l) / (60 * 60 * 1000) + 8);
+        if (nTime != lTime || (now - lastSaveTime) > l){
+            return false;
+        } else {
+            return true;
+        }
+    }
+    /**
+     *判断service挂了重启是否还处于同一天
+     */
+    public boolean isSameDay(long now){
+        long l = 24 * 60 * 60 * 1000; //每天的毫秒数
+        int nTime = (int) ((now % l) / (60 * 60 * 1000) + 8);   //计算所属时间段
+        Long lastSaveTime = TextUtil.getLongValue(this, Constant.lastSaveTime);
+        int lTime = (int) ((lastSaveTime % l) / (60 * 60 * 1000) + 8);
+        if ((now - lastSaveTime) > l){
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -125,7 +149,6 @@ public class MonitorService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG,"Service启动");
         activityManager =(ActivityManager) getApplicationContext().getSystemService(
                 Context.ACTIVITY_SERVICE);
         pm = getPackageManager();
@@ -133,12 +156,11 @@ public class MonitorService extends Service {
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         WakeService receiver = new WakeService();
         registerReceiver(receiver, filter);
-        //flags = START_STICKY;
-
+        flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void startMonitor(){
+    private void startMonitor(){
         if (mTimer != null){
             mTimer.cancel();
             mTimer = null;
@@ -150,7 +172,7 @@ public class MonitorService extends Service {
         }
     }
 
-    public String getTableName(){
+    private String getSectionNewTableName(){
         SimpleDateFormat formatter = new SimpleDateFormat ("yyyyMMdd");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         StringBuilder sb = new StringBuilder();
@@ -160,189 +182,219 @@ public class MonitorService extends Service {
         return sb.toString();
     }
 
+    private String getTotalNewTableName(){
+        SimpleDateFormat formatter = new SimpleDateFormat ("yyyyMMdd");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        StringBuilder sb = new StringBuilder();
+        String tablename = formatter.format(curDate);
+        sb.append("t").append(tablename);
+        TextUtil.putStringValue(this, Constant.totalTimeTableName, sb.toString());
+        return sb.toString();
+    }
+
+
+
     class MonitorTimer extends TimerTask{
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(MonitorService.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         DatabaseAdapter dbAdapter= new DatabaseAdapter();
-        Date mDate = new Date();
-        long initialTime = mDate.getTime();
-        String tablename= getTableName();
+        String tablename= getSectionNewTableName();
+        String totalTableName = getTotalNewTableName();
+        Date date = new Date();
+        long initialTime = date.getTime();
 
-        private void saveMap(HashMap<String,Integer> map,String section,String tablename){
+        private void saveMap(HashMap<String,Integer> map,String section,
+                             String tablename,Long lastSaveTime){
             Log.i(TAG,"map的大小"+map.size());
+            TextUtil.putLongValue(App.getInstance(), Constant.lastSaveTime, lastSaveTime);
             Iterator<Map.Entry<String,Integer>> iterator = map.entrySet().iterator();
             StringBuffer sb = new StringBuffer();
             while (iterator.hasNext()){
                 Map.Entry<String,Integer> entry = iterator.next();
                 sb.append(entry.getKey()+"66split66");
             }
-            dbAdapter.newTable(tablename, db);
-            dbAdapter.updateTable(section, sb.toString(), db, tablename);
+            dbAdapter.newSectionTable(tablename, db);
+            dbAdapter.updateSectionTable(section, sb.toString(), db, tablename);
             sendBroadcast(intent);//发送广播，更新listview
-            //dbAdapter.queryTable(db);
+        }
+
+        private void saveTotalTime(String tablename,String appName,Long totalTime){
+            dbAdapter.newTotalTimeTable(tablename, db);
+            dbAdapter.updateTotalTimeTable(appName, totalTime, db, tablename);
+        }
+
+        private Long getLastTotalTime(String tablename,String appName){
+            return dbAdapter.queryTotalTable(db,tablename,appName);
         }
 
         @Override
         public void run() {
             cn = activityManager.getRunningTasks(1).get(0).topActivity;
             String currentPackageName = cn.getPackageName();
-            if(!currentPackageName.equals(lastPackageName)) {
-                Date date = new Date();
-                long l = 24 * 60 * 60 * 1000; //每天的毫秒数
-                long now = date.getTime();//当前时间
-                int time = (int) ((now % l) / (60 * 60 * 1000) + 8);   //计算所属时间段
-                boolean invalidateDay = (now / l) > (initialTime / l);
-                boolean invalidateTime = (((int) ((initialTime % l) / (60 * 60 * 1000) + 8)) != time);
-                if (invalidateTime){
-                    map.clear();
+            long l = 24 * 60 * 60 * 1000; //每天的毫秒数
+            Date mDate = new Date();
+            long now = mDate.getTime();//当前时间
+            int time = (int) ((now % l) / (60 * 60 * 1000) + 8);   //计算所属时间段
+            if (!isSameTime(now)){
+                map.clear();
+                if (!isSameDay(now)){
+                    totalTableName = getTotalNewTableName();
+                    saveTotalTime(totalTableName,lastPackageName,
+                            getLastTotalTime(totalTableName,lastPackageName)+(now-initialTime));
+                    tablename= getSectionNewTableName();
                     initialTime = now;
-                    if (invalidateDay){
-                        tablename= getTableName();
-                    }
                 }
+            }
+            if(!currentPackageName.equals(lastPackageName)) {
+                saveTotalTime(totalTableName, lastPackageName,
+                        getLastTotalTime(totalTableName, lastPackageName) + (now - initialTime));
+                //Long t = getLastTotalTime(totalTableName,lastPackageName)+(now-initialTime);
+//                Log.i(TAG,"lastPackageName="+lastPackageName+" toatlTime="+t+" now="+now+" initialTime"+
+//                        initialTime);
+                initialTime = now;
                 switch (time) {
                     case 0:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 0);
-                            saveMap(map, "0", tablename);
+                            saveMap(map, "0", tablename,now);
                         }
                         break;
                     case 1:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 1);
-                            saveMap(map, "1", tablename);
+                            saveMap(map, "1", tablename,now);
                         }
                         break;
                     case 2:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 2);
-                            saveMap(map, "2", tablename);
+                            saveMap(map, "2", tablename,now);
                         }
                         break;
                     case 3:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 3);
-                            saveMap(map, "3", tablename);
+                            saveMap(map, "3", tablename,now);
                         }
                         break;
                     case 4:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 4);
-                            saveMap(map, "4", tablename);
+                            saveMap(map, "4", tablename,now);
                         }
                         break;
                     case 5:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 5);
-                            saveMap(map, "5", tablename);
+                            saveMap(map, "5", tablename,now);
                         }
                         break;
                     case 6:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 6);
-                            saveMap(map, "6", tablename);
+                            saveMap(map, "6", tablename,now);
                         }
                         break;
                     case 7:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 7);
-                            saveMap(map, "7", tablename);
+                            saveMap(map, "7", tablename,now);
                         }
                         break;
                     case 8:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 8);
-                            saveMap(map, "8", tablename);
+                            saveMap(map, "8", tablename,now);
                         }
                         break;
                     case 9:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 9);
-                            saveMap(map, "9", tablename);
+                            saveMap(map, "9", tablename,now);
                         }
                         break;
                     case 10:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 10);
-                            saveMap(map, "10", tablename);
+                            saveMap(map, "10", tablename,now);
                         }
                         break;
                     case 11:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 11);
-                            saveMap(map, "11", tablename);
+                            saveMap(map, "11", tablename,now);
                         }
                         break;
                     case 12:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 12);
-                            saveMap(map, "12", tablename);
+                            saveMap(map, "12", tablename,now);
                         }
                         break;
                     case 13:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 13);
-                            saveMap(map, "13", tablename);
+                            saveMap(map, "13", tablename,now);
                         }
                         break;
                     case 14:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 14);
-                            saveMap(map, "14", tablename);
+                            saveMap(map, "14", tablename,now);
                         }
                         break;
                     case 15:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 15);
-                            saveMap(map, "15", tablename);
+                            saveMap(map, "15", tablename,now);
                         }
                         break;
                     case 16:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 16);
-                            saveMap(map, "16", tablename);
+                            saveMap(map, "16", tablename,now);
                         }
                         break;
                     case 17:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 17);
-                            saveMap(map, "17", tablename);
+                            saveMap(map, "17", tablename,now);
                         }
                         break;
                     case 18:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 18);
-                            saveMap(map, "18", tablename);
+                            saveMap(map, "18", tablename,now);
                         }
                         break;
                     case 19:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 19);
-                            saveMap(map, "19", tablename);
+                            saveMap(map, "19", tablename,now);
                         }
                         break;
                     case 20:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 20);
-                            saveMap(map, "20", tablename);
+                            saveMap(map, "20", tablename,now);
                         }
                         break;
                     case 21:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 21);
-                            saveMap(map, "21", tablename);
+                            saveMap(map, "21", tablename,now);
                         }
                         break;
                     case 22:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 22);
-                            saveMap(map, "22", tablename);
+                            saveMap(map, "22", tablename,now);
                         }
                         break;
                     case 23:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName,23);
-                            saveMap(map, "23", tablename);
+                            saveMap(map, "23", tablename,now);
                         }
                         break;
                 }

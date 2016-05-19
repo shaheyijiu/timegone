@@ -20,59 +20,73 @@ import Util.TextUtil;
  * Created by Administrator on 2016/5/9.
  */
 public class DatabaseAdapter {
-    private  String TABLE_NAME = "";
+    private  String SECTION_TABLE_NAME = "";
     private  String COLUMN_NAME_SECTION = "timesection";
     private  String COLUMN_NAME_APP = "appname";
-
-
-    public   String USERNAME_TABLE_CREATE = "CREATE TABLE "
-            + TABLE_NAME + " ("
-            + COLUMN_NAME_SECTION +" TEXT, "
-            + COLUMN_NAME_APP  +" TEXT); ";
+    private String COLUMN_NAME_TOTAL_TIME = "total_time";
 
     private String TAG = "DatabaseAdapter";
+
     public DatabaseAdapter(){
 
     }
 
-    public void newTable(String table_name,SQLiteDatabase db) {
-        this.TABLE_NAME = table_name;
-        db.execSQL(getSql());
+    public void newSectionTable(String table_name,SQLiteDatabase db) {
+        this.SECTION_TABLE_NAME = table_name;
+        db.execSQL(getSectionCreateSql());
     }
 
-    public String getSql(){
-        return USERNAME_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS "
-                + TABLE_NAME + " ("
+    public void newTotalTimeTable(String table_name,SQLiteDatabase db){
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + table_name + " ("
+                + COLUMN_NAME_APP +" TEXT, "
+                + COLUMN_NAME_TOTAL_TIME  +" TEXT); ");
+    }
+
+    public String getSectionCreateSql(){
+        return  "CREATE TABLE IF NOT EXISTS "
+                + SECTION_TABLE_NAME + " ("
                 + COLUMN_NAME_SECTION +" TEXT, "
                 + COLUMN_NAME_APP  +" TEXT); ";
     }
 
     public void insertToTable(String section,String appname,SQLiteDatabase db){
         ContentValues values = new ContentValues();
-        values.put("timesection",section);
-        values.put("appname", appname);
-        db.insert(TABLE_NAME, null, values);
+        values.put(COLUMN_NAME_SECTION,section);
+        values.put(COLUMN_NAME_APP, appname);
+        db.insert(SECTION_TABLE_NAME, null, values);
     }
 
-    public void updateTable(String section,String appname,SQLiteDatabase db,String tablename){
+    public void updateSectionTable(String section,String appname,SQLiteDatabase db,String tablename){
         if(section != null && appname != null){
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SECTION,section);
             values.put(COLUMN_NAME_APP, appname);
-            if (isFirstInsert(db,section,tablename)){
+            if (isFirstInsertInSection(db, section, tablename)){
                 db.insert(tablename, null, values);
             }else {
-                String where="timesection = ?" ;
+                String where = COLUMN_NAME_SECTION+" = ?" ;
                 db.update(tablename, values, where, new String[]{section});
             }
-            //String sql = "UPDATE "+TABLE_NAME+" SET appname = "+appname+" where timesection = "+section+";";
-
-            //db.execSQL(sql);
         }
 
     }
 
-    private boolean checkColumnExist1(SQLiteDatabase db, String tableName
+    public void updateTotalTimeTable(String appname,Long totalTime,SQLiteDatabase db,String tablename){
+        if(totalTime != null && appname != null){
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_APP,appname);
+            values.put(COLUMN_NAME_TOTAL_TIME, totalTime);
+            if (isFirstInsertInTotal(db, appname, tablename)){
+                db.insert(tablename, null, values);
+            }else {
+                String where = COLUMN_NAME_APP+" = ?" ;
+                db.update(tablename, values, where, new String[]{appname});
+            }
+        }
+    }
+
+    private boolean checkColumnExist(SQLiteDatabase db, String tableName
             , String columnName) {
         boolean result = false ;
         Cursor cursor = null ;
@@ -92,11 +106,11 @@ public class DatabaseAdapter {
         return result ;
     }
 
-    public  ArrayList<Map<String,String>> queryTable(SQLiteDatabase db,String tablename){
+    public  ArrayList<Map<String,String>> querySectionTable(SQLiteDatabase db,String tablename){
         ArrayList<Map<String,String>> list = new ArrayList<>();
         if (!tablename.equals("")){
-            this.TABLE_NAME = tablename;
-            db.execSQL(getSql());//防止查询的表不存在
+            this.SECTION_TABLE_NAME = tablename;
+            db.execSQL(getSectionCreateSql());//防止查询的表不存在
             Cursor cursor = db.rawQuery("select * from " + tablename +" order by "+ COLUMN_NAME_SECTION
                     +" asc" ,null);
             while (cursor.moveToNext()){
@@ -112,11 +126,63 @@ public class DatabaseAdapter {
         return list;
     }
 
-    public boolean isFirstInsert(SQLiteDatabase db,String section,String tablename){
+    public Long queryTotalTable(SQLiteDatabase db,String tablename,String appName){
+        long totalTime = 0;
+        if (!tablename.equals("")){
+            newTotalTimeTable(tablename,db);
+            Cursor cursor = db.rawQuery("select * from " + tablename ,null);
+            if (cursor!=null){
+                while (cursor.moveToNext()){
+                    String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
+                    if (appname.equals(appName)){
+                        totalTime = cursor.getLong(cursor.getColumnIndex(COLUMN_NAME_TOTAL_TIME ));
+                    }
+                    //Log.i(TAG,"timesection="+timesection+" appname="+appname);
+                }
+            }
+
+            cursor.close();
+        }
+        return totalTime;
+    }
+
+    public ArrayList<Map<String,Long>> queryAllTotalTable(SQLiteDatabase db,String tablename){
+        ArrayList<Map<String,Long>> list = new ArrayList<>();
+        if (!tablename.equals("")){
+            newTotalTimeTable(tablename,db);
+            Cursor cursor = db.rawQuery("select * from " + tablename + " order by "+ COLUMN_NAME_TOTAL_TIME
+                    +" asc"  ,null);
+            if (cursor!=null){
+                while (cursor.moveToNext()){
+                    String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
+                    long totalTime = cursor.getLong(cursor.getColumnIndex(COLUMN_NAME_TOTAL_TIME));
+                    Map<String,Long> map = new HashMap<>();
+                    map.put(appname,totalTime);
+                    list.add(map);
+                }
+            }
+
+            cursor.close();
+        }
+        return list;
+    }
+
+    public boolean isFirstInsertInSection(SQLiteDatabase db,String section,String tablename){
         Cursor cursor = db.rawQuery("select * from " + tablename ,null);
         while (cursor.moveToNext()){
             String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
             if (timesection.equals(section))
+                return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    public boolean isFirstInsertInTotal(SQLiteDatabase db,String appName,String tablename){
+        Cursor cursor = db.rawQuery("select * from " + tablename ,null);
+        while (cursor.moveToNext()){
+            String app = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
+            if (appName.equals(app))
                 return false;
         }
         cursor.close();

@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import Util.Constant;
 import Util.TextUtil;
 import adapter.AlphaAnimatorAdapter;
 import adapter.BottomAnimatorAdapter;
@@ -40,6 +41,7 @@ import adapter.LeftAnimatorAdapter;
 import adapter.MyListAdapter;
 import adapter.RightAnimatorAdapter;
 import adapter.ScaleAnimatorAdapter;
+import app.App;
 import database.DatabaseAdapter;
 import database.DatabaseHelper;
 import service.MonitorService;
@@ -78,11 +80,23 @@ public class ListviewFragment extends Fragment {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         DatabaseAdapter mAdapter = new DatabaseAdapter();
-        String tablename = TextUtil.getStringValue(getContext(),"tablename");
-        mList = mAdapter.queryTable(db,tablename);
+        String tablename = getNewTableName();
+
+        mList = mAdapter.querySectionTable(db,tablename);
         adapter = new MyListAdapter(getContext(), R.layout.listview_item,mList);
+
         //listView.setAdapter(adapter);
         setLeftAnimator(adapter);
+    }
+
+    public String getNewTableName(){
+        SimpleDateFormat formatter = new SimpleDateFormat ("yyyyMMdd");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        StringBuilder sb = new StringBuilder();
+        String tablename = formatter.format(curDate);
+        sb.append("m").append(tablename);
+        TextUtil.putStringValue(App.getInstance(), "tablename", sb.toString());
+        return sb.toString();
     }
 
     private void updateListview(MyListAdapter adapter){
@@ -90,10 +104,8 @@ public class ListviewFragment extends Fragment {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         DatabaseAdapter mAdapter = new DatabaseAdapter();
         String tablename = TextUtil.getStringValue(getContext(),"tablename");
-        mList = mAdapter.queryTable(db,tablename);
-        adapter = new MyListAdapter(getContext(), R.layout.listview_item,mList);
+        mList = mAdapter.querySectionTable(db,tablename);
         initList();
-        //adapter.notifyDataSetChanged();
     }
 
 
