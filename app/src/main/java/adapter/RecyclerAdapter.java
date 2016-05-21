@@ -33,6 +33,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     public RecyclerAdapter(Drawable[] myDataset) {
         mDataset = myDataset;
+        Log.i(TAG,"mDataser.length="+mDataset.length);
     }
 
     // Create new views (invoked by the layout manager)

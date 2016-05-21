@@ -53,7 +53,6 @@ public class MyListAdapter extends ArrayAdapter {
     }
     @Override
     public int getCount() {
-        Log.i(TAG,"mlist.size()="+mList.size());
         return mList.size();
     }
     @Override
@@ -77,6 +76,7 @@ public class MyListAdapter extends ArrayAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        Log.i(TAG,"getSection(getKey(mList.get(position)))=" + getSection(getKey(mList.get(position))));
         viewHolder.textView.setText(getSection(getKey(mList.get(position))));
 
         getValue(mList.get(position));
@@ -166,17 +166,26 @@ public class MyListAdapter extends ArrayAdapter {
     }
 
     private Drawable[] getIcon(String[] ImageBox){
-        DrawableBox = new Drawable[ImageBox.length];
+        int count = 0;
+        for (int i = 0;i < ImageBox.length;i++){
+            if(!ImageBox[i].equals("com.smartisanos.launcher")){
+                count++;
+            }
+        }
+        DrawableBox = new Drawable[count];
+        count = 0;
         for (int i = 0;i < ImageBox.length;i++){
             try {
                 if(!ImageBox[i].equals("com.smartisanos.launcher")){
+                    Log.i(TAG,"包名 = "+ImageBox[i]);
                     ApplicationInfo info = pm.getApplicationInfo(ImageBox[i], 0);
-                    DrawableBox[i] = info.loadIcon(pm);
+                    DrawableBox[count++] = info.loadIcon(pm);
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
         }
+        Log.i(TAG,"DrawableBox.length= "+DrawableBox.length);
         return DrawableBox;
     }
 
