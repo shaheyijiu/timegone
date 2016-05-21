@@ -34,7 +34,7 @@ public class GraphFragment extends Fragment {
     private View layout;
     private ArrayList<Map<String,Long>> mList;
     List<PieChartView.PieceDataHolder> pieceDataHolders = new ArrayList<>();
-
+    private int[] colors ={0xFF11AA33,Color.GRAY,Color.GREEN,Color.RED,Color.BLUE,Color.BLACK,Color.CYAN};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,15 +47,29 @@ public class GraphFragment extends Fragment {
 
     private void initGraph(){
         mList = getTotalTime();
-       // if (mList.size() < 3){
+       if (mList.size() < 4){
             for (int i = 0;i < mList.size();i++){
                 Map<String,Long> map = mList.get(i);
                 String appPackageName = getPackageName(map);
                 String appProgramName = getProgramName(App.getInstance(),appPackageName);
                 Long time = getTime(map);
-                pieceDataHolders.add(new PieChartView.PieceDataHolder(time,0xFF77CCAA, appProgramName));
+                pieceDataHolders.add(new PieChartView.PieceDataHolder(time,colors[i], appProgramName));
             }
-      //  } 
+       } else{
+           for (int i = 1;i <= 4;i++){
+               Map<String,Long> map = mList.get(mList.size()-i);
+               String appPackageName = getPackageName(map);
+               String appProgramName = getProgramName(App.getInstance(),appPackageName);
+               Long time = getTime(map);
+               pieceDataHolders.add(new PieChartView.PieceDataHolder(time,colors[i], appProgramName));
+           }
+           long total = 0;
+           for (int i = 0;i < mList.size()-4;i++){
+               Map<String,Long> map = mList.get(i);
+               total += getTime(map);
+           }
+           pieceDataHolders.add(new PieChartView.PieceDataHolder(total,colors[0], "其它"));
+       }
 
 //        pieceDataHolders.add(new PieChartView.PieceDataHolder(1000, 0xFF11AA33, "明天，２"));
 //        pieceDataHolders.add(new PieChartView.PieceDataHolder(1200, Color.GRAY, "就是风，３"));

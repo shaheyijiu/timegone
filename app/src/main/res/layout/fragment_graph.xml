@@ -7,10 +7,9 @@
     <view.PieChartView
         android:id="@+id/pie_chart"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:background="@android:color/transparent"
-        android:paddingBottom="40dp"
-        android:paddingLeft="20dp"
-        app:circleRadius="50dp"
-        app:textSize="2sp" />
+        app:circleRadius="100dp"
+        app:textSize="4sp" />
 </LinearLayout>

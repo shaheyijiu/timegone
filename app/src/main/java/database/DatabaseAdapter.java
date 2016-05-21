@@ -23,6 +23,7 @@ public class DatabaseAdapter {
     private  String SECTION_TABLE_NAME = "";
     private  String COLUMN_NAME_SECTION = "timesection";
     private  String COLUMN_NAME_APP = "appname";
+    private String COLUMN_FLAG = "flag";//用于更新table的寻找标记
     private String COLUMN_NAME_TOTAL_TIME = "total_time";
 
     private String TAG = "DatabaseAdapter";
@@ -46,8 +47,9 @@ public class DatabaseAdapter {
     public String getSectionCreateSql(){
         return  "CREATE TABLE IF NOT EXISTS "
                 + SECTION_TABLE_NAME + " ("
-                + COLUMN_NAME_SECTION +" TEXT, "
-                + COLUMN_NAME_APP  +" TEXT); ";
+                + COLUMN_NAME_SECTION +" SMALLINT, "
+                + COLUMN_NAME_APP  +" TEXT,"
+                + COLUMN_FLAG + " TEXT); ";
     }
 
     public void insertToTable(String section,String appname,SQLiteDatabase db){
@@ -57,16 +59,20 @@ public class DatabaseAdapter {
         db.insert(SECTION_TABLE_NAME, null, values);
     }
 
-    public void updateSectionTable(String section,String appname,SQLiteDatabase db,String tablename){
-        if(section != null && appname != null){
+    public void updateSectionTable(int section,String appname,SQLiteDatabase db,String tablename){
+        if( appname != null){
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SECTION,section);
             values.put(COLUMN_NAME_APP, appname);
+            values.put(COLUMN_FLAG,Integer.toString(section));
             if (isFirstInsertInSection(db, section, tablename)){
+                //Log.i(TAG,"isFisrt");
                 db.insert(tablename, null, values);
             }else {
-                String where = COLUMN_NAME_SECTION+" = ?" ;
-                db.update(tablename, values, where, new String[]{section});
+               // String where = COLUMN_NAME_SECTION+" = "+ section ;
+                String where = COLUMN_FLAG+" = ?";
+                //Log.i(TAG,"where=" +where);
+                db.update(tablename, values, where, new String[]{Integer.toString(section)});
             }
         }
 
@@ -106,23 +112,24 @@ public class DatabaseAdapter {
         return result ;
     }
 
-    public  ArrayList<Map<String,String>> querySectionTable(SQLiteDatabase db,String tablename){
-        ArrayList<Map<String,String>> list = new ArrayList<>();
+    public  ArrayList<Map<Integer,String>> querySectionTable(SQLiteDatabase db,String tablename){
+        ArrayList<Map<Integer,String>> list = new ArrayList<>();
         if (!tablename.equals("")){
             this.SECTION_TABLE_NAME = tablename;
             db.execSQL(getSectionCreateSql());//防止查询的表不存在
             Cursor cursor = db.rawQuery("select * from " + tablename +" order by "+ COLUMN_NAME_SECTION
                     +" asc" ,null);
             while (cursor.moveToNext()){
-                String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
+                int timesection = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_SECTION));
                 String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
-                Map<String,String> map = new HashMap<>();
+                Map<Integer,String> map = new HashMap<>();
                 map.put(timesection,appname);
                 list.add(map);
-                //Log.i(TAG,"timesection="+timesection+" appname="+appname);
+               // Log.i(TAG, "timesection=" + timesection + " appname=" + appname);
             }
             cursor.close();
         }
+       // Log.i(TAG, "list=" + list.size());
         return list;
     }
 
@@ -167,11 +174,11 @@ public class DatabaseAdapter {
         return list;
     }
 
-    public boolean isFirstInsertInSection(SQLiteDatabase db,String section,String tablename){
+    public boolean isFirstInsertInSection(SQLiteDatabase db,int section,String tablename){
         Cursor cursor = db.rawQuery("select * from " + tablename ,null);
         while (cursor.moveToNext()){
-            String timesection = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SECTION ));
-            if (timesection.equals(section))
+            int timesection = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_SECTION));
+            if (timesection == section)
                 return false;
         }
         cursor.close();

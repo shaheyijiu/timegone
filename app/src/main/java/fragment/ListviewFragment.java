@@ -53,7 +53,7 @@ public class ListviewFragment extends Fragment {
     private Map<String,String> mapSqlite = new HashMap<>();
     private ListView listView;
     private View layout;
-    private  ArrayList<Map<String,String>> mList = new ArrayList<>();
+    private  ArrayList<Map<Integer,String>> mList = new ArrayList<>();
     private MyListAdapter adapter;
     private MsgReceiver msgReceiver;
     private LeftAnimatorAdapter leftAdapter;

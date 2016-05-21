@@ -95,18 +95,18 @@ public class MonitorService extends Service {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(MonitorService.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         DatabaseAdapter dbAdapter= new DatabaseAdapter();
-        ArrayList<Map<String,String>> list = dbAdapter.querySectionTable(db, tablename);
+        ArrayList<Map<Integer,String>> list = dbAdapter.querySectionTable(db, tablename);
         if (list.size() >= 1 && isSameTime(now)){
-            Map<String,String> tempMap = list.get(list.size() - 1);
-            Iterator<Map.Entry<String, String>> it = tempMap.entrySet().iterator();
+            Map<Integer,String> tempMap = list.get(list.size() - 1);
+            Iterator<Map.Entry<Integer, String>> it = tempMap.entrySet().iterator();
 
             while (it.hasNext()) {
-                Map.Entry<String, String> entry = it.next();
+                Map.Entry<Integer, String> entry = it.next();
                 String[] sArray;
                 sArray = entry.getValue().split(defaultSplit);
                 for(int i = 0;i < sArray.length;i++){
                     if(!map.containsKey(sArray[i]))
-                        map.put(sArray[i], Integer.parseInt(entry.getKey()));
+                        map.put(sArray[i], entry.getKey());
                 }
             }
         }
@@ -203,7 +203,7 @@ public class MonitorService extends Service {
         Date date = new Date();
         long initialTime = date.getTime();
 
-        private void saveMap(HashMap<String,Integer> map,String section,
+        private void saveMap(HashMap<String,Integer> map,int section,
                              String tablename,Long lastSaveTime){
             Log.i(TAG,"map的大小"+map.size());
             TextUtil.putLongValue(App.getInstance(), Constant.lastSaveTime, lastSaveTime);
@@ -256,145 +256,145 @@ public class MonitorService extends Service {
                     case 0:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 0);
-                            saveMap(map, "0", tablename,now);
+                            saveMap(map, 0, tablename,now);
                         }
                         break;
                     case 1:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 1);
-                            saveMap(map, "1", tablename,now);
+                            saveMap(map, 1, tablename,now);
                         }
                         break;
                     case 2:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 2);
-                            saveMap(map, "2", tablename,now);
+                            saveMap(map, 2, tablename,now);
                         }
                         break;
                     case 3:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 3);
-                            saveMap(map, "3", tablename,now);
+                            saveMap(map, 3, tablename,now);
                         }
                         break;
                     case 4:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 4);
-                            saveMap(map, "4", tablename,now);
+                            saveMap(map, 4, tablename,now);
                         }
                         break;
                     case 5:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 5);
-                            saveMap(map, "5", tablename,now);
+                            saveMap(map, 5, tablename,now);
                         }
                         break;
                     case 6:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 6);
-                            saveMap(map, "6", tablename,now);
+                            saveMap(map, 6, tablename,now);
                         }
                         break;
                     case 7:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 7);
-                            saveMap(map, "7", tablename,now);
+                            saveMap(map, 7, tablename,now);
                         }
                         break;
                     case 8:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 8);
-                            saveMap(map, "8", tablename,now);
+                            saveMap(map, 8, tablename,now);
                         }
                         break;
                     case 9:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 9);
-                            saveMap(map, "9", tablename,now);
+                            saveMap(map, 9, tablename,now);
                         }
                         break;
                     case 10:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 10);
-                            saveMap(map, "10", tablename,now);
+                            saveMap(map, 10, tablename,now);
                         }
                         break;
                     case 11:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 11);
-                            saveMap(map, "11", tablename,now);
+                            saveMap(map, 11, tablename,now);
                         }
                         break;
                     case 12:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 12);
-                            saveMap(map, "12", tablename,now);
+                            saveMap(map, 12, tablename,now);
                         }
                         break;
                     case 13:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 13);
-                            saveMap(map, "13", tablename,now);
+                            saveMap(map, 13, tablename,now);
                         }
                         break;
                     case 14:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 14);
-                            saveMap(map, "14", tablename,now);
+                            saveMap(map, 14, tablename,now);
                         }
                         break;
                     case 15:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 15);
-                            saveMap(map, "15", tablename,now);
+                            saveMap(map, 15, tablename,now);
                         }
                         break;
                     case 16:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 16);
-                            saveMap(map, "16", tablename,now);
+                            saveMap(map, 16, tablename,now);
                         }
                         break;
                     case 17:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 17);
-                            saveMap(map, "17", tablename,now);
+                            saveMap(map, 17, tablename,now);
                         }
                         break;
                     case 18:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 18);
-                            saveMap(map, "18", tablename,now);
+                            saveMap(map, 18, tablename,now);
                         }
                         break;
                     case 19:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 19);
-                            saveMap(map, "19", tablename,now);
+                            saveMap(map, 19, tablename,now);
                         }
                         break;
                     case 20:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 20);
-                            saveMap(map, "20", tablename,now);
+                            saveMap(map, 20, tablename,now);
                         }
                         break;
                     case 21:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 21);
-                            saveMap(map, "21", tablename,now);
+                            saveMap(map, 21, tablename,now);
                         }
                         break;
                     case 22:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName, 22);
-                            saveMap(map, "22", tablename,now);
+                            saveMap(map, 22, tablename,now);
                         }
                         break;
                     case 23:
                         if (!map.containsKey(currentPackageName)) {
                             map.put(currentPackageName,23);
-                            saveMap(map, "23", tablename,now);
+                            saveMap(map, 23, tablename,now);
                         }
                         break;
                 }
