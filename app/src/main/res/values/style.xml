@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="theme_light" >
+        <item name="theme_background">@color/bg_main_normal</item>
+        <item name="text_color">@color/bg_main_dark</item>
+        <item name="bar_color">@color/bar_normal_color</item>
+    </style>
+
+    <style name="theme_night">
+        <item name="theme_background">#808080</item>
+        <item name="text_color">@color/bg_main_normal</item>
+        <item name="bar_color">@color/bar_night_color</item>
+    </style>
+</resources>

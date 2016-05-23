@@ -7,5 +7,6 @@ public class Constant {
     public static String AppName = "com.kdk.timegone";
     public static String lastSaveTime = "lastSaveTime";
     public static String totalTimeTableName = "totalTimeTableName";
+    public static String theme = "theme";
 
 }

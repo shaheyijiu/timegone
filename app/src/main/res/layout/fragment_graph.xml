@@ -7,11 +7,12 @@
     android:orientation="vertical"
     xrefreshview:isHeightMatchParent="true"
     xrefreshview:isWidthMatchParent="true" >
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <colorUi.widget.ColorLinerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="?attr/theme_background"
         android:orientation="vertical">
         <view.PieChartView
             android:id="@+id/pie_chart"
@@ -21,5 +22,5 @@
             android:background="@android:color/transparent"
             app:circleRadius="100dp"
             app:textSize="4sp" />
-    </LinearLayout>
+    </colorUi.widget.ColorLinerLayout>
 </com.andview.refreshview.XRefreshView>

@@ -36,6 +36,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/nightMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
@@ -54,7 +55,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/two"
-                android:text="第2个Item"
+                android:text="@string/night_mode"
                 android:textColor="#f0f0f0"
                 android:textSize="20sp" />
         </RelativeLayout>

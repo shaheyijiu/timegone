@@ -3,5 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="bar_color">#303F9F</color>
+    <color name="bar_normal_color">#303F9F</color>
+    <color name="bar_night_color">#404040</color>
+    <color name="bg_main_normal">#ffffff</color>
+    <color name="textcolor_main_normal">#ff0000</color>
+    <color name="bg_main_dark">#000000</color>
+    <color name="textcolor_main_dark">#000000</color>
+    <color name="bg_second_normal">#0000ff</color>
 </resources>

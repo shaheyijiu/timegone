@@ -29,6 +29,8 @@ import com.nineoldandroids.view.ViewHelper;
 import java.util.ArrayList;
 
 
+import Util.Constant;
+import Util.TextUtil;
 import adapter.AlphaAnimatorAdapter;
 import adapter.BottomAnimatorAdapter;
 import adapter.BottomRightAnimatorAdapter;
@@ -36,6 +38,8 @@ import adapter.LeftAnimatorAdapter;
 import adapter.MyListAdapter;
 import adapter.RightAnimatorAdapter;
 import adapter.ScaleAnimatorAdapter;
+import app.App;
+import colorUi.util.SharedPreferencesMgr;
 import fragment.FragmentAdapter;
 
 public class MainActivity extends ActionBarActivity {
@@ -46,6 +50,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        //SharedPreferencesMgr.setInt("theme", 0);
+        setTheme(R.style.theme_light);
+        TextUtil.putIntValue(App.getInstance(), Constant.theme,1);
         setContentView(R.layout.activity_main);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
 
@@ -83,6 +90,7 @@ public class MainActivity extends ActionBarActivity {
 
                     ViewHelper.setScaleX(mMenu, leftScale);
                     ViewHelper.setScaleY(mMenu, leftScale);
+                    //
                     ViewHelper.setAlpha(mMenu, 0.8f + 0.2f * (1 - scale));
                     ViewHelper.setTranslationX(mContent,
                             mMenu.getMeasuredWidth() * (1 - scale));
