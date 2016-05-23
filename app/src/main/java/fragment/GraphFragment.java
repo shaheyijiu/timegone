@@ -3,6 +3,7 @@ package fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.andview.refreshview.XRefreshView;
 import com.kdk.timegone.R;
 
 import java.text.SimpleDateFormat;
@@ -33,16 +35,76 @@ import view.PieChartView;
 public class GraphFragment extends Fragment {
     private View layout;
     private ArrayList<Map<String,Long>> mList;
+    private XRefreshView refreshView;
+    private PieChartView pieChartView;
+    public static long lastRefreshTime;
     List<PieChartView.PieceDataHolder> pieceDataHolders = new ArrayList<>();
     private int[] colors ={0xFF11AA33,Color.GRAY,Color.GREEN,Color.RED,Color.BLUE,Color.BLACK,Color.CYAN};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = this.getActivity().getLayoutInflater().inflate(R.layout.fragment_graph,null);
-        PieChartView pieChartView = (PieChartView) layout.findViewById(R.id.pie_chart);
+        pieChartView = (PieChartView) layout.findViewById(R.id.pie_chart);
+        refreshView = (XRefreshView) layout.findViewById(R.id.custom_view);
         initGraph();
+        initFreshView();
         pieChartView.setData(pieceDataHolders);
         return layout;
+    }
+
+    private void initFreshView(){
+        // 设置是否可以下拉刷新
+        refreshView.setPullRefreshEnable(true);
+        // 设置是否可以上拉加载
+        refreshView.setPullLoadEnable(false);
+        // 设置上次刷新的时间
+        refreshView.restoreLastRefreshTime(lastRefreshTime);
+        // 设置时候可以自动刷新
+        refreshView.setAutoRefresh(false);
+
+        refreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pieceDataHolders.clear();
+                        initGraph();
+                        //pieceDataHolders.add(new PieChartView.PieceDataHolder(1000, 0xFF11AA33, "明天，２"));
+                        pieChartView.setData(pieceDataHolders);
+                        refreshView.stopRefresh();
+                        lastRefreshTime = refreshView.getLastRefreshTime();
+                    }
+                }, 2000);
+            }
+
+            @Override
+            public void onLoadMore(boolean isSlience) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshView.stopLoadMore();
+                    }
+                }, 2000);
+            }
+
+            @Override
+            public void onRelease(float direction) {
+                super.onRelease(direction);
+                if (direction > 0) {
+                    toast("下拉");
+                } else {
+                    toast("上拉");
+                }
+            }
+        });
+
+    }
+
+    public void toast(String msg) {
+        //Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     private void initGraph(){

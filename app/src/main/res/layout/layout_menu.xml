@@ -11,6 +11,7 @@
         android:orientation="vertical" >
 
         <RelativeLayout
+            android:id="@+id/timeUse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
@@ -29,7 +30,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/one"
-                android:text="第1个Item"
+                android:text="@string/time_use"
                 android:textColor="#f0f0f0"
                 android:textSize="20sp" />
         </RelativeLayout>

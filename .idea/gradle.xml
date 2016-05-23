@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/leakcanary-android-no-op" />
             <option value="$PROJECT_DIR$/leakcanary-sample" />
             <option value="$PROJECT_DIR$/leakcanary-watcher" />
+            <option value="$PROJECT_DIR$/library" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -83,7 +83,7 @@ public class MainActivity extends ActionBarActivity {
 
                     ViewHelper.setScaleX(mMenu, leftScale);
                     ViewHelper.setScaleY(mMenu, leftScale);
-                    ViewHelper.setAlpha(mMenu, 0.6f + 0.4f * (1 - scale));
+                    ViewHelper.setAlpha(mMenu, 0.8f + 0.2f * (1 - scale));
                     ViewHelper.setTranslationX(mContent,
                             mMenu.getMeasuredWidth() * (1 - scale));
                     ViewHelper.setPivotX(mContent, 0);

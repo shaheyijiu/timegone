@@ -1,16 +1,26 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.andview.refreshview.XRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xrefreshview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <ListView
-        android:id="@+id/list"
-        android:layout_width = "match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    xrefreshview:isHeightMatchParent="true"
+    xrefreshview:isWidthMatchParent="true" >
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@android:color/transparent"
-        android:scrollbars="none"
-        android:fitsSystemWindows="true"/>
-</LinearLayout>
+        android:orientation="vertical">
+        <ListView
+            android:id="@+id/list"
+            android:layout_width = "match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:scrollbars="none"
+            android:fitsSystemWindows="true"/>
+    </LinearLayout>
+</com.andview.refreshview.XRefreshView>

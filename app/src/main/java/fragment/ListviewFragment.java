@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,7 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+//import com.andview.refreshview.XRefreshView;
+import com.andview.refreshview.XRefreshView;
 import com.kdk.timegone.MainActivity;
 import com.kdk.timegone.R;
 
@@ -57,13 +61,18 @@ public class ListviewFragment extends Fragment {
     private MyListAdapter adapter;
     private MsgReceiver msgReceiver;
     private LeftAnimatorAdapter leftAdapter;
+    private XRefreshView refreshView;
+    public static long lastRefreshTime;
+
     private String TAG = "ListviewFragment";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = this.getActivity().getLayoutInflater().inflate(R.layout.fragment_listview,null);
         listView = (ListView)layout.findViewById(R.id.list);
+        refreshView = (XRefreshView) layout.findViewById(R.id.custom_view);
         initList();
+        refreshView.setPullRefreshEnable(false);
 
         //动态注册广播接收器
         msgReceiver = new MsgReceiver();

@@ -1,15 +1,25 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.andview.refreshview.XRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xrefreshview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-    <view.PieChartView
-        android:id="@+id/pie_chart"
+    android:background="#fff"
+    android:orientation="vertical"
+    xrefreshview:isHeightMatchParent="true"
+    xrefreshview:isWidthMatchParent="true" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="@android:color/transparent"
-        app:circleRadius="100dp"
-        app:textSize="4sp" />
-</LinearLayout>
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
+        <view.PieChartView
+            android:id="@+id/pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            app:circleRadius="100dp"
+            app:textSize="4sp" />
+    </LinearLayout>
+</com.andview.refreshview.XRefreshView>
