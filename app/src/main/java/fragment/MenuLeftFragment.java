@@ -2,6 +2,7 @@ package fragment;
 
 import android.animation.Animator;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.kdk.timegone.R;
+import com.kdk.timegone.SetTimeLimit;
 
 import Util.Constant;
 import Util.TextUtil;
@@ -52,7 +54,8 @@ public class MenuLeftFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.timeUse){
-
+            Intent intent = new Intent(getActivity(), SetTimeLimit.class);
+            startActivity(intent);
         }
         if (id == R.id.nightMode){
 

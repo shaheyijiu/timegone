@@ -60,7 +60,7 @@ public class GraphFragment extends Fragment {
         // 设置上次刷新的时间
         refreshView.restoreLastRefreshTime(lastRefreshTime);
         // 设置时候可以自动刷新
-        refreshView.setAutoRefresh(false);
+        //refreshView.setAutoRefresh(false);
 
         refreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
 

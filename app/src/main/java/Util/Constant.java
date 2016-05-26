@@ -8,5 +8,6 @@ public class Constant {
     public static String lastSaveTime = "lastSaveTime";
     public static String totalTimeTableName = "totalTimeTableName";
     public static String theme = "theme";
+    public static String limitTable = "limitTime";
 
 }

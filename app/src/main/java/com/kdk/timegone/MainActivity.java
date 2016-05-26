@@ -62,9 +62,12 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-        initEvents();
+        //initEvents();
     }
 
+    /**
+     * 设置类似QQ的侧滑菜单
+     */
     private void initEvents()
     {
         mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener()
@@ -126,6 +129,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+
     public static class PlaceholderFragment extends Fragment {
         private FragmentAdapter fragmentAdapter;
         @Nullable

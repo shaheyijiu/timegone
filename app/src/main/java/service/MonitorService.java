@@ -41,7 +41,7 @@ import database.DatabaseHelper;
  * Created by Administrator on 2016/5/11.
  */
 public class MonitorService extends Service {
-    private String lastPackageName ="com.kdk.timegone";
+    private String lastPackageName ="";
     private String defaultSplit = "66split66";
     private PackageManager pm ;
     private ActivityManager activityManager;
@@ -237,7 +237,7 @@ public class MonitorService extends Service {
             int time = (int) ((now % l) / (60 * 60 * 1000) + 8);   //计算所属时间段
             if (!isSameTime(now)){
                 map.clear();
-                if (!isSameDay(now)){
+                if (!isSameDay(now) && !lastPackageName.equals("")){
                     totalTableName = getTotalNewTableName();
                     saveTotalTime(totalTableName,lastPackageName,
                             getLastTotalTime(totalTableName,lastPackageName)+(now-initialTime));
@@ -246,8 +246,10 @@ public class MonitorService extends Service {
                 }
             }
             if(!currentPackageName.equals(lastPackageName)) {
-                saveTotalTime(totalTableName, lastPackageName,
-                        getLastTotalTime(totalTableName, lastPackageName) + (now - initialTime));
+                if (!lastPackageName.equals("")){
+                    saveTotalTime(totalTableName, lastPackageName,
+                            getLastTotalTime(totalTableName, lastPackageName) + (now - initialTime));
+                }
                 //Long t = getLastTotalTime(totalTableName,lastPackageName)+(now-initialTime);
 //                Log.i(TAG,"lastPackageName="+lastPackageName+" toatlTime="+t+" now="+now+" initialTime"+
 //                        initialTime);

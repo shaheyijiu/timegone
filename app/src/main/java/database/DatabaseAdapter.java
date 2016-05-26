@@ -25,7 +25,7 @@ public class DatabaseAdapter {
     private  String COLUMN_NAME_APP = "appname";
     private String COLUMN_FLAG = "flag";//用于更新table的寻找标记
     private String COLUMN_NAME_TOTAL_TIME = "total_time";
-
+    private String COLUMN_NAME_LIMIT = "limit_time";
     private String TAG = "DatabaseAdapter";
 
     public DatabaseAdapter(){
@@ -42,6 +42,13 @@ public class DatabaseAdapter {
                 + table_name + " ("
                 + COLUMN_NAME_APP +" TEXT, "
                 + COLUMN_NAME_TOTAL_TIME  +" TEXT); ");
+    }
+
+    public void newLimitTimeTable(String table_name,SQLiteDatabase db){
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + table_name + " ("
+                + COLUMN_NAME_APP +" TEXT, "
+                + COLUMN_NAME_LIMIT  +" TEXT); ");
     }
 
     public String getSectionCreateSql(){
@@ -83,6 +90,20 @@ public class DatabaseAdapter {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_APP,appname);
             values.put(COLUMN_NAME_TOTAL_TIME, totalTime);
+            if (isFirstInsertInTotal(db, appname, tablename)){
+                db.insert(tablename, null, values);
+            }else {
+                String where = COLUMN_NAME_APP+" = ?" ;
+                db.update(tablename, values, where, new String[]{appname});
+            }
+        }
+    }
+
+    public void updateLimitTimeTable(String appname,int totalTime,SQLiteDatabase db,String tablename){
+        if (tablename != null){
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_APP,appname);
+            values.put(COLUMN_NAME_LIMIT,totalTime);
             if (isFirstInsertInTotal(db, appname, tablename)){
                 db.insert(tablename, null, values);
             }else {
@@ -174,6 +195,25 @@ public class DatabaseAdapter {
         return list;
     }
 
+    public int queryLimitTable(SQLiteDatabase db,String tablename,String appName){
+        int limitTime = 0;
+        if (!tablename.equals("")){
+            newLimitTimeTable(tablename, db);
+            Cursor cursor = db.rawQuery("select * from " + tablename ,null);
+            if (cursor!=null){
+                while (cursor.moveToNext()){
+                    String appname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
+                    if (appname.equals(appName)){
+                        limitTime = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_LIMIT));
+                    }
+                    //Log.i(TAG,"timesection="+timesection+" appname="+appname);
+                }
+            }
+
+            cursor.close();
+        }
+        return limitTime;
+    }
     public boolean isFirstInsertInSection(SQLiteDatabase db,int section,String tablename){
         Cursor cursor = db.rawQuery("select * from " + tablename ,null);
         while (cursor.moveToNext()){
@@ -188,13 +228,14 @@ public class DatabaseAdapter {
     public boolean isFirstInsertInTotal(SQLiteDatabase db,String appName,String tablename){
         Cursor cursor = db.rawQuery("select * from " + tablename ,null);
         while (cursor.moveToNext()){
-            String app = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP ));
+            String app = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_APP));
             if (appName.equals(app))
                 return false;
         }
         cursor.close();
         return true;
     }
+
 
     public void clearTable(SQLiteDatabase db){
 //        db.execSQL("DELETE FROM m20160511");

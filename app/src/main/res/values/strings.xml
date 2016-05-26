@@ -3,4 +3,6 @@
     <string name="row_number">This is row number %d</string>
     <string name="time_use">使用时间</string>
     <string name="night_mode">夜间模式</string>
+    <string name="lock_screen">锁屏</string>
+    <string name="setLimit">日限</string>
 </resources>

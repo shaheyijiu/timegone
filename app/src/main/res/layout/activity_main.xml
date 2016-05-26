@@ -1,32 +1,38 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/id_drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/bar_color">
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-        <include layout="@layout/layout_top"/>
-        <FrameLayout
-            android:id="@+id/container"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+    <include layout="@layout/layout_top"/>
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/id_drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/bar_color">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <FrameLayout
+                android:id="@+id/container"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                tools:context=".MainActivity"
+                tools:ignore="MergeRootFrame" />
+        </LinearLayout>
+        <fragment
+            android:id="@+id/id_left_menu"
+            android:name="fragment.MenuLeftFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF"
-            tools:context=".MainActivity"
-            tools:ignore="MergeRootFrame" />
-    </LinearLayout>
-    <fragment
-        android:id="@+id/id_left_menu"
-        android:name="fragment.MenuLeftFragment"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:tag="LEFT" />
-</android.support.v4.widget.DrawerLayout>
+            android:layout_gravity="start"
+            android:tag="LEFT" />
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>
 
 

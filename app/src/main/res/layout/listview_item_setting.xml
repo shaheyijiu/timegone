@@ -1,0 +1,135 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="#d9d9d9" />
+    <RelativeLayout
+        android:id="@+id/rl_item"
+        android:layout_width="match_parent"
+        android:layout_height="62dp">
+        <RelativeLayout
+            android:id="@+id/rl_head"
+            android:layout_width="58dp"
+            android:layout_height="58dp">
+            <ImageView
+                android:id="@+id/iv_appIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_xinxi"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/rl_head"
+            android:layout_marginLeft="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <colorUi.widget.ColorTextView
+                android:id="@+id/tv_appName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="14sp"
+                android:textColor="?attr/text_color" />
+            <colorUi.widget.ColorTextView
+                android:id="@+id/tv_limit"
+                android:layout_alignParentRight="true"
+                android:textSize="14dp"
+                android:text="@string/setLimit"
+                android:textColor="?attr/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/rl_head"
+            android:layout_below="@+id/rl_xinxi"
+            android:layout_marginLeft="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <colorUi.widget.ColorTextView
+                android:id="@+id/tv_total_time"
+                android:maxEms="15"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="12dp"
+                android:textColor="?attr/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+            <ImageView
+                android:id="@+id/iv_limit"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/remind"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="#d9d9d9" />
+    <RelativeLayout
+        android:id="@+id/rl_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="visible">
+
+        <Button
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/minus"
+            android:background="@drawable/minus"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="确认"
+            android:textSize="12dp"
+            android:id="@+id/bt_sure"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp" />
+
+        <Button
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/add"
+            android:background="@drawable/add"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/bt_sure"
+            android:layout_toStartOf="@+id/bt_sure"
+            android:layout_marginRight="5dp" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/progressBar"
+            android:layout_toRightOf="@+id/minus"
+            android:layout_toLeftOf="@+id/add" />
+
+
+    </RelativeLayout>
+</LinearLayout>

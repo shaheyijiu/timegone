@@ -1,12 +1,5 @@
-<com.andview.refreshview.XRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xrefreshview="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/custom_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff"
-    android:orientation="vertical"
-    xrefreshview:isHeightMatchParent="true"
-    xrefreshview:isWidthMatchParent="true" >
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
     <colorUi.widget.ColorLinerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -23,4 +16,4 @@
             android:scrollbars="none"
             android:fitsSystemWindows="true"/>
     </colorUi.widget.ColorLinerLayout>
-</com.andview.refreshview.XRefreshView>
+</merge>

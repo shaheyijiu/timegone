@@ -76,7 +76,6 @@ public class MyListAdapter extends ArrayAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Log.i(TAG,"getSection(getKey(mList.get(position)))=" + getSection(getKey(mList.get(position))));
         viewHolder.textView.setText(getSection(getKey(mList.get(position))));
 
         getValue(mList.get(position));
