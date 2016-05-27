@@ -5,4 +5,9 @@
     <string name="night_mode">夜间模式</string>
     <string name="lock_screen">锁屏</string>
     <string name="setLimit">日限</string>
+    <string name="click_to_login">登录</string>
+    <string name="settings">设置</string>
+    <string name="help">帮助</string>
+    <string name="about">关于</string>
+    <string name="feedback">反馈</string>
 </resources>

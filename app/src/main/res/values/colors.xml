@@ -10,4 +10,5 @@
     <color name="bg_main_dark">#000000</color>
     <color name="textcolor_main_dark">#000000</color>
     <color name="bg_second_normal">#0000ff</color>
+    <color name="white">#FFFFFF</color>
 </resources>

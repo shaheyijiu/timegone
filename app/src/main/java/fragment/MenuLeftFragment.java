@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.kdk.timegone.R;
@@ -26,23 +27,23 @@ import colorUi.util.SharedPreferencesMgr;
  * Created by Administrator on 2016/5/21.
  */
 public class MenuLeftFragment extends Fragment implements View.OnClickListener{
-    private RelativeLayout timeUse;
-    private RelativeLayout nightMode;
+    private LinearLayout timeUse;
+    private LinearLayout nightMode;
 
     private String TAG = "MenuLeftFragment";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.layout_menu, container, false);
+        View view = inflater.inflate(R.layout.layout_left_menu, container, false);
         initView(view);
         setListener();
         return view;
     }
 
     private void initView(View view){
-        timeUse = (RelativeLayout)view.findViewById(R.id.timeUse);
-        nightMode = (RelativeLayout)view.findViewById(R.id.nightMode);
+        timeUse = (LinearLayout)view.findViewById(R.id.timeUse);
+        nightMode = (LinearLayout)view.findViewById(R.id.nightMode);
     }
 
     private void setListener(){
