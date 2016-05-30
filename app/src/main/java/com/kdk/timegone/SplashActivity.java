@@ -26,7 +26,6 @@ import adapter.RecyclerAdapter;
  * Created by Administrator on 2016/4/28.
  */
 public class SplashActivity extends Activity {
-    private Button bt_listview;
     private TextView tv_app;
     private int fx1, fy1, tx1, ty1;
 
@@ -35,7 +34,7 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-        bt_listview = (Button)findViewById(R.id.bt_listview);
+
         tv_app = (TextView)findViewById(R.id.tv_app);
 
         tv_app.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -46,13 +45,14 @@ public class SplashActivity extends Activity {
                 fx1 = 0;
                 tx1 = 0;
                 fy1 = 0;
-                ty1 = -(h / 2 - tv_app.getHeight() / 2 );
+                ty1 = -tv_app.getTop();
                 tv_app.getViewTreeObserver()
                         .removeGlobalOnLayoutListener(this);
             }
         });
 
-        Animation animation = AnimationUtils.loadAnimation(SplashActivity.this,R.anim.tutorail_scalate);
+        Animation animation = AnimationUtils.loadAnimation(SplashActivity.this,
+                R.anim.tutorail_scalate);
         animation.setFillAfter(true);
         tv_app.startAnimation(animation);
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -63,7 +63,8 @@ public class SplashActivity extends Activity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                TranslateAnimation translateAnimation = new TranslateAnimation(fx1, tx1, fy1, ty1);
+                TranslateAnimation translateAnimation = new
+                        TranslateAnimation(fx1, tx1, fy1, ty1);
                 translateAnimation.setDuration(800);
                 translateAnimation.setRepeatCount(0);
                 translateAnimation.setRepeatMode(Animation.RESTART);
@@ -71,6 +72,26 @@ public class SplashActivity extends Activity {
                 LinearInterpolator lin = new LinearInterpolator();
                 translateAnimation.setInterpolator(lin);
                 tv_app.startAnimation(translateAnimation);
+                translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        Intent intent = new Intent(SplashActivity.this,
+                                MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.activiy_in,
+                                R.anim.activity_out);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
             }
 
             @Override
@@ -79,14 +100,6 @@ public class SplashActivity extends Activity {
             }
         });
 
-
-        bt_listview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
 }

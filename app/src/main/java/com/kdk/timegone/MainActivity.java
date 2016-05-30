@@ -23,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.widget.TextView;
 
 import com.nineoldandroids.view.ViewHelper;
 
@@ -46,16 +47,17 @@ public class MainActivity extends ActionBarActivity {
     private String TAG = "MainActivity";
     private BaseAdapter mAdapter;
     private DrawerLayout mDrawerLayout;
+    private TextView t;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         //SharedPreferencesMgr.setInt("theme", 0);
         setTheme(R.style.theme_light);
-        TextUtil.putIntValue(App.getInstance(), Constant.theme,1);
+        TextUtil.putIntValue(App.getInstance(), Constant.theme, 1);
         setContentView(R.layout.activity_main);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
-
+        t = (TextView)findViewById(R.id.test);
         Log.i(TAG,"MainActivity启动");
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
